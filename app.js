@@ -1,20 +1,20 @@
 // src/app.js
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
-const reservationRoutes = require('./routes/reservationRoutes');
+const cors = require('cors');
+
+const routes = require('./routes');
 
 const app = express();
+
+// Middlewares globais
+app.use(cors());
 app.use(bodyParser.json());
-app.use('/views', express.static(path.join(__dirname, '../public/views')));
-app.use('/css', express.static(path.join(__dirname, '../public/css')));
-app.use('/js', express.static(path.join(__dirname, '../public/js')));
-app.use('/api', reservationRoutes);
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
-});
+// Rotas principais
+app.use('/', routes);
 
+// Exporta o app para o server.js
 module.exports = app;
-
